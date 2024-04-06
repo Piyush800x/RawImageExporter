@@ -2,8 +2,8 @@ import os
 import shutil
 import sys
 import threading
-from tkinter import Label, Text, filedialog, Entry, StringVar, HORIZONTAL, messagebox, Toplevel
-from tkinter.ttk import Button, Progressbar
+from tkinter import Label, Text, filedialog, Entry, StringVar, HORIZONTAL, messagebox, Toplevel, BooleanVar
+from tkinter.ttk import Button, Progressbar, Checkbutton
 from ttkthemes import ThemedTk
 from time import sleep
 
@@ -19,8 +19,13 @@ class MainWindow(ThemedTk):
         self.iconbitmap("logo.ico")
         # self.geometry("500x360")
         self.protocol('WM_DELETE_WINDOW', lambda: [sys.exit(0)])
+        # vars
         self.cr2_entry_var: StringVar = StringVar()
         self.output_entry_var: StringVar = StringVar()
+        self.is_cr2: BooleanVar = BooleanVar()
+        self.is_cr3: BooleanVar = BooleanVar()
+        self.is_nef: BooleanVar = BooleanVar()
+        self.is_arw: BooleanVar = BooleanVar()
 
         self.progress = 0
         self.progressbar: Progressbar
@@ -34,10 +39,18 @@ class MainWindow(ThemedTk):
         self.jpg_path_text.pack(padx=2, pady=2)
 
         # cr2-label entry btn
-        cr2_path_label = Label(self, text="CR2 Directory Path:", font=FONT)
+        cr2_path_label = Label(self, text="CR2/NEF/ARW Directory Path:", font=FONT)
         cr2_path_label.pack(padx=2, pady=2)
         cr2_path_text = Entry(self, textvariable=self.cr2_entry_var, width=70, font=FONT)
         cr2_path_text.pack(padx=2, pady=2)
+        check_1: Checkbutton = Checkbutton(self, text="CR2", variable=self.is_cr2, onvalue=True, offvalue=False)
+        check_1.pack()
+        check_4: Checkbutton = Checkbutton(self, text="CR3", variable=self.is_cr3, onvalue=True, offvalue=False)
+        check_4.pack()
+        check_2: Checkbutton = Checkbutton(self, text="NEF", variable=self.is_nef, onvalue=True, offvalue=False)
+        check_2.pack()
+        check_3: Checkbutton = Checkbutton(self, text="ARW", variable=self.is_arw, onvalue=True, offvalue=False)
+        check_3.pack()
         browse_btn = Button(self, text="Browse", command=self.set_cr2_browse)
         browse_btn.pack(padx=2, pady=2)
 
@@ -57,6 +70,10 @@ class MainWindow(ThemedTk):
     def set_cr2_browse(self):
         file = filedialog.askdirectory()
         self.cr2_entry_var.set(file)
+        print(f'CR2 {self.is_cr2.get()}')
+        print(f'CR3 {self.is_cr3.get()}')
+        print(f'nef {self.is_nef.get()}')
+        print(f'arw {self.is_arw.get()}')
         print(f"cr2 entry var {self.cr2_entry_var.get()}")
 
     def set_output_browse(self):
@@ -88,22 +105,71 @@ class MainWindow(ThemedTk):
             jpg_filename = os.path.basename(jpg_path)
             jpg_name, _ = os.path.splitext(jpg_filename)
             cr2_path = os.path.join(cr2_dir, jpg_name + ".cr2")
+            cr3_path = os.path.join(cr2_dir, jpg_name + ".cr3")
+            nef_path = os.path.join(cr2_dir, jpg_name + ".nef")
+            arw_path = os.path.join(cr2_dir, jpg_name + ".arw")
 
-            # Check if the corresponding CR2 file exists
-            if os.path.isfile(cr2_path):
-                # Copy the CR2 file to the output directory
-                output_path = os.path.join(output_dir, jpg_name + ".cr2")
-                shutil.copy2(cr2_path, output_path)  # copy2 copies metadata
-                # shutil.copy(cr2_path, output_path)    # copy no metadata copy
-                print(f"Copied {cr2_path} to {output_path}")
-                self.progress += chunk_size
-                sleep(2)
-                # self.progressbar['value'] = self.progress
-            else:
-                print(f"No CR2 file found for {jpg_path}")
-                self.progress += chunk_size
-                sleep(2)
-                # self.progressbar['value'] = self.progress
+            # Checks for CR2
+            if self.is_cr2.get():
+                # Check if the corresponding CR2 file exists
+                if os.path.isfile(cr2_path):
+                    # Copy the CR2 file to the output directory
+                    output_path = os.path.join(output_dir, jpg_name + ".cr2")
+                    shutil.copy2(cr2_path, output_path)  # copy2 copies metadata
+                    # shutil.copy(cr2_path, output_path)    # copy no metadata copy
+                    print(f"Copied {cr2_path} to {output_path}")
+                    # self.progressbar['value'] = self.progress
+                else:
+                    print(f"No CR2 file found for {jpg_path}")
+                    # self.progress += chunk_size
+                    # self.progressbar['value'] = self.progress
+
+            # Checks for CR3
+            if self.is_cr3.get():
+                # Check if the corresponding CR2 file exists
+                if os.path.isfile(cr3_path):
+                    # Copy the CR2 file to the output directory
+                    output_path = os.path.join(output_dir, jpg_name + ".cr3")
+                    shutil.copy2(cr3_path, output_path)  # copy2 copies metadata
+                    # shutil.copy(cr2_path, output_path)    # copy no metadata copy
+                    print(f"Copied {cr3_path} to {output_path}")
+                    # self.progressbar['value'] = self.progress
+                else:
+                    print(f"No CR2 file found for {jpg_path}")
+                    # self.progress += chunk_size
+                    # self.progressbar['value'] = self.progress
+
+            # Checks for NEF
+            if self.is_nef.get():
+                if os.path.isfile(nef_path):
+                    # Copy the NEF file to the output directory
+                    output_path = os.path.join(output_dir, jpg_name + ".nef")
+                    shutil.copy2(nef_path, output_path)  # copy2 copies metadata
+                    # shutil.copy(cr2_path, output_path)    # copy no metadata copy
+                    print(f"Copied {nef_path} to {output_path}")
+                    # self.progress += chunk_size
+                    # self.progressbar['value'] = self.progress
+                else:
+                    print(f"No nef file found for {jpg_path}")
+                    # self.progress += chunk_size
+                    # self.progressbar['value'] = self.progress
+
+            # Checks for ARW
+            if self.is_arw.get():
+                if os.path.isfile(arw_path):
+                    # Copy the NEF file to the output directory
+                    output_path = os.path.join(output_dir, jpg_name + ".arw")
+                    shutil.copy2(arw_path, output_path)  # copy2 copies metadata
+                    # shutil.copy(cr2_path, output_path)    # copy no metadata copy
+                    print(f"Copied {arw_path} to {output_path}")
+                    # self.progress += chunk_size
+                    # self.progressbar['value'] = self.progress
+                else:
+                    print(f"No arw file found for {jpg_path}")
+                    # self.progress += chunk_size
+                    # self.progressbar['value'] = self.progress
+
+            self.progress += chunk_size
 
     def progress_window(self):
         self.win: Toplevel = Toplevel()
