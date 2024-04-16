@@ -16,8 +16,8 @@ An all-in-one software to export traditional image files (.jpg, .jpeg) to raw fi
 
 Clone the repository
 ```bash
-  git clone __link__
-  cd dir_name
+  git clone https://github.com/Piyush800x/RawExporter.git
+  cd RawExporter
 ```
 
 Install dependencies
