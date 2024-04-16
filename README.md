@@ -9,7 +9,7 @@ An all-in-one software to export traditional image files (.jpg, .jpeg) to raw fi
 - [@Piyush_Paul](https://github.com/Piyush800x/)
 ## 🐱‍👤 Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![App Screenshot](https://github.com/Piyush800x/RawExporter/blob/master/assets/RIE.jpg)
 
 
 ## ✔ Run the software locally
